@@ -8,11 +8,7 @@ import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import chatRoutes from "./routes/chat.route.js";
 
-import connectDB from "./lib/db.js"; // or { connectDB } depending on your export
-
-// console.log('MONGODB_URI:', process.env.MONGODB_URI);
-// console.log('All env vars:', Object.keys(process.env).filter(key => key.startsWith('MONGODB')));
-
+import connectDB from "./lib/db.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,7 +17,7 @@ const __dirname = path.resolve();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173", // Update to frontend URL on production if needed
     credentials: true,
   })
 );
@@ -29,10 +25,17 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// Test route for Render or local health check
+app.get("/api/test", (req, res) => {
+  res.json({ message: "API is working ✅" });
+});
+
+// Main API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 
+// Serve frontend in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
@@ -41,6 +44,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+// Start server and connect to DB
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();
