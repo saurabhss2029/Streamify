@@ -1,9 +1,14 @@
-import axios from "axios";
+import { axiosInstance } from "../utils/axios"; // adjust the import path if needed
 
-// Use VITE_API_URL from your .env file set in Vercel
-const BASE_URL = import.meta.env.VITE_API_URL;
-
-export const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true, // send cookies with the request
-});
+const handleLogin = async () => {
+  try {
+    const res = await axiosInstance.post("/auth/login", {
+      email,
+      password,
+    });
+    console.log("Login success:", res.data);
+    // Redirect or store token/user etc.
+  } catch (err) {
+    console.error("Login error:", err.response?.data || err.message);
+  }
+};
